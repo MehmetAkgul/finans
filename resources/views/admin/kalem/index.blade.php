@@ -13,7 +13,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header ">
-                                <h4>Markalar</h4>
+                                <h4>Kalem Listesi</h4>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body ">
@@ -39,8 +39,8 @@
                                     <thead>
                                     <tr>
                                         <th>Ad</th>
+                                        <th>Kalem Tipi</th>
                                         <th>Düzenle</th>
-                                        <th>Müşteri Tipi</th>
                                         <th>Sil</th>
                                     </tr>
                                     </thead>
@@ -81,12 +81,12 @@
                 serverSide: true,
                 ajax: {
                     type: 'POST',
-                    url: '{{route('musteriler.data')}}',
+                    url: '{{route('kalem.data')}}',
 
                 },
                 columns: [
-                    {data: 'publicName', name: 'publicName'},
-                    {data: 'musteriTipi', name: 'musteriTipi'},
+                    {data: 'ad', name: 'ad'},
+                    {data: 'kalemTipi', name: 'kalemTipi'},
                     {data: 'edit', name: 'edit', orderable: false, searchable: false},
                     {data: 'delete', name: 'delete', orderable: false, searchable: false}
 

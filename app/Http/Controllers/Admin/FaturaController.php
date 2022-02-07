@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Helper\FileUpload;
 use App\Http\Controllers\Controller;
+use App\Models\Fatura;
+use App\Models\Kalem;
 use App\Models\Musteriler;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -11,10 +12,9 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\File;
 use Yajra\DataTables\Facades\DataTables;
 
-class MusteriController extends Controller
+class FaturaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,8 +23,8 @@ class MusteriController extends Controller
      */
     public function index()
     {
-        $data = Musteriler::paginate(10);
-        return view('admin.musteriler.index', compact('data'));
+
+        return view('admin.fatura.index');
     }
 
     /**
@@ -32,9 +32,15 @@ class MusteriController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function create()
+    public function create($type)
     {
-        return view('admin.musteriler.create');
+        $musteriler = Musteriler::all();
+        $kalem = Kalem::where('kalemTipi', $type)->get();
+        if ($type == 0) {
+            return view('admin.fatura.gelir.create', compact('musteriler', 'kalem'));
+        } else {
+            return view('admin.fatura.gelir.create', compact('musteriler', 'kalem'));
+        }
     }
 
     /**
@@ -46,11 +52,10 @@ class MusteriController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $all = $request->except('_token');
-        $all['photo'] = FileUpload::newUpload('musteriler', $request->file('photo'), 0);
 
-        $create = Musteriler::create($all);
+        $create = Fatura::create($all);
         if ($create) {
-            $notification = array('staus', 'Müsteri Eklendi');
+            $notification = array('staus', 'Fatura Eklendi');
         } else {
             $notification = array('staus', 'Bir hata oluştu');
         }
@@ -77,10 +82,10 @@ class MusteriController extends Controller
      */
     public function edit($id)
     {
-        $c = Musteriler::where('id', $id)->count();
+        $c = Fatura::where('id', $id)->count();
         if ($c != 0) {
-            $data = Musteriler::where('id', $id)->first();
-            return  view('admin.musteriler.edit', compact('data'));
+            $data = Fatura::where('id', $id)->first();
+            return view('admin.fatura.edit', compact('data'));
         } else {
             return redirect('/');
         }
@@ -95,16 +100,14 @@ class MusteriController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $c = Musteriler::where('id', $id)->count();
+        $c = Fatura::where('id', $id)->count();
         if ($c != 0) {
-            $data = Musteriler::where('id', $id)->first();
 
             $all = $request->except('_token');
-            $all['photo'] = FileUpload::changeUpload('musteriler', $request->file('photo'), 0, $data, "photo");
 
-            $update = Musteriler::where('id', $id)->update($all);
+            $update = Fatura::where('id', $id)->update($all);
             if ($update) {
-                $notification = array('staus', 'Müsteri Düzenlendi');
+                $notification = array('staus', 'Gelir $ Gider Faturai Düzenlendi');
             } else {
                 $notification = array('staus', 'Bir hata oluştu');
             }
@@ -125,16 +128,13 @@ class MusteriController extends Controller
      */
     public function delete($id)
     {
-        $c = Musteriler::where('id', $id)->count();
+        $c = Fatura::where('id', $id)->count();
 
         if ($c != 0) {
-            $data = Musteriler::where('id', $id)->first();
-            if ($data->photo != "")
-                File::delete(public_path() . '/' . $data->photo);
 
-            $delete = Musteriler::where('id', $id)->delete();
+            $delete = Fatura::where('id', $id)->delete();
             if ($delete) {
-                $notification = array('staus', 'Müsteri Düzenlendi');
+                $notification = array('staus', 'Gelir $ Gider Faturai Düzenlendi');
             } else {
                 $notification = array('staus', 'Bir hata oluştu');
             }
@@ -156,23 +156,23 @@ class MusteriController extends Controller
      */
     public function data(Request $request)
     {
-        $table = Musteriler::query();
+        $table = Fatura::query();
         $data = DataTables::of($table)
             ->addColumn('edit', function ($table) {
-                return '<a href="' . route('musteriler.edit', ['id' => $table->id]) . '">Düzenle</a>';
+                return '<a href="' . route('fatura.edit', ['id' => $table->id]) . '">Düzenle</a>';
             })
             ->addColumn('delete', function ($table) {
-                return '<a href="' . route('musteriler.delete', ['id' => $table->id]) . '">Sil</a>';
+                return '<a href="' . route('fatura.delete', ['id' => $table->id]) . '">Sil</a>';
             })
-            ->editColumn('musteriTipi', function ($table) {
-                if ($table->musteriTipi == 0) {
-                    return "Bireysel";
+            ->addColumn('musteri', function ($table) {
+                return Musteriler::getPublicName($table->musteriId);
+            })
+            ->editColumn('faturaTipi', function ($table) {
+                if ($table->faturaTipi == 0) {
+                    return "Gelir";
                 } else {
-                    return "Kurumsal";
+                    return "Gider";
                 }
-            })
-            ->addColumn('publicName', function ($table) {
-                return Musteriler::getPublicName($table->id);
             })
             ->rawColumns(['edit', 'delete'])
             ->make(true);

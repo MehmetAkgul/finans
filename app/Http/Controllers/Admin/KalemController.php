@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helper\FileUpload;
 use App\Http\Controllers\Controller;
-use App\Models\Musteriler;
+use App\Models\Kalem;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -14,7 +14,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Yajra\DataTables\Facades\DataTables;
 
-class MusteriController extends Controller
+class KalemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,8 +23,8 @@ class MusteriController extends Controller
      */
     public function index()
     {
-        $data = Musteriler::paginate(10);
-        return view('admin.musteriler.index', compact('data'));
+        $data = Kalem::paginate(10);
+        return view('admin.kalem.index', compact('data'));
     }
 
     /**
@@ -34,7 +34,7 @@ class MusteriController extends Controller
      */
     public function create()
     {
-        return view('admin.musteriler.create');
+        return view('admin.kalem.create');
     }
 
     /**
@@ -46,11 +46,10 @@ class MusteriController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $all = $request->except('_token');
-        $all['photo'] = FileUpload::newUpload('musteriler', $request->file('photo'), 0);
 
-        $create = Musteriler::create($all);
+        $create = Kalem::create($all);
         if ($create) {
-            $notification = array('staus', 'Müsteri Eklendi');
+            $notification = array('staus', 'Gelir $ Gider Kalemi Eklendi');
         } else {
             $notification = array('staus', 'Bir hata oluştu');
         }
@@ -77,10 +76,10 @@ class MusteriController extends Controller
      */
     public function edit($id)
     {
-        $c = Musteriler::where('id', $id)->count();
+        $c = Kalem::where('id', $id)->count();
         if ($c != 0) {
-            $data = Musteriler::where('id', $id)->first();
-            return  view('admin.musteriler.edit', compact('data'));
+            $data = Kalem::where('id', $id)->first();
+            return  view('admin.kalem.edit', compact('data'));
         } else {
             return redirect('/');
         }
@@ -95,16 +94,14 @@ class MusteriController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $c = Musteriler::where('id', $id)->count();
+        $c = Kalem::where('id', $id)->count();
         if ($c != 0) {
-            $data = Musteriler::where('id', $id)->first();
 
             $all = $request->except('_token');
-            $all['photo'] = FileUpload::changeUpload('musteriler', $request->file('photo'), 0, $data, "photo");
 
-            $update = Musteriler::where('id', $id)->update($all);
+            $update = Kalem::where('id', $id)->update($all);
             if ($update) {
-                $notification = array('staus', 'Müsteri Düzenlendi');
+                $notification = array('staus', 'Gelir $ Gider Kalemi Düzenlendi');
             } else {
                 $notification = array('staus', 'Bir hata oluştu');
             }
@@ -125,16 +122,13 @@ class MusteriController extends Controller
      */
     public function delete($id)
     {
-        $c = Musteriler::where('id', $id)->count();
+        $c = Kalem::where('id', $id)->count();
 
         if ($c != 0) {
-            $data = Musteriler::where('id', $id)->first();
-            if ($data->photo != "")
-                File::delete(public_path() . '/' . $data->photo);
 
-            $delete = Musteriler::where('id', $id)->delete();
+            $delete = Kalem::where('id', $id)->delete();
             if ($delete) {
-                $notification = array('staus', 'Müsteri Düzenlendi');
+                $notification = array('staus', 'Gelir $ Gider Kalemi Düzenlendi');
             } else {
                 $notification = array('staus', 'Bir hata oluştu');
             }
@@ -156,23 +150,20 @@ class MusteriController extends Controller
      */
     public function data(Request $request)
     {
-        $table = Musteriler::query();
+        $table = Kalem::query();
         $data = DataTables::of($table)
             ->addColumn('edit', function ($table) {
-                return '<a href="' . route('musteriler.edit', ['id' => $table->id]) . '">Düzenle</a>';
+                return '<a href="' . route('kalem.edit', ['id' => $table->id]) . '">Düzenle</a>';
             })
             ->addColumn('delete', function ($table) {
-                return '<a href="' . route('musteriler.delete', ['id' => $table->id]) . '">Sil</a>';
+                return '<a href="' . route('kalem.delete', ['id' => $table->id]) . '">Sil</a>';
             })
-            ->editColumn('musteriTipi', function ($table) {
-                if ($table->musteriTipi == 0) {
-                    return "Bireysel";
+            ->editColumn('kalemTipi', function ($table) {
+                if ($table->kalemTipi == 0) {
+                    return "Gelir";
                 } else {
-                    return "Kurumsal";
+                    return "Gider";
                 }
-            })
-            ->addColumn('publicName', function ($table) {
-                return Musteriler::getPublicName($table->id);
             })
             ->rawColumns(['edit', 'delete'])
             ->make(true);

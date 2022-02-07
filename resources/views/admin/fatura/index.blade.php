@@ -13,7 +13,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header ">
-                                <h4>Markalar</h4>
+                                <h4>Kalem Listesi</h4>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body ">
@@ -38,9 +38,10 @@
                                 <table class="table table-bordered" id="example">
                                     <thead>
                                     <tr>
-                                        <th>Ad</th>
+                                        <th>Fatura No</th>
+                                        <th>Müşteri </th>
+                                        <th>Fatura Tipi</th>
                                         <th>Düzenle</th>
-                                        <th>Müşteri Tipi</th>
                                         <th>Sil</th>
                                     </tr>
                                     </thead>
@@ -81,12 +82,13 @@
                 serverSide: true,
                 ajax: {
                     type: 'POST',
-                    url: '{{route('musteriler.data')}}',
+                    url: '{{route('fatura.data')}}',
 
                 },
                 columns: [
-                    {data: 'publicName', name: 'publicName'},
-                    {data: 'musteriTipi', name: 'musteriTipi'},
+                    {data: 'faturaNo', name: 'faturaNo'},
+                    {data: 'musteri', name: 'musteri'},
+                    {data: 'faturaTipi', name: 'faturaTipi'},
                     {data: 'edit', name: 'edit', orderable: false, searchable: false},
                     {data: 'delete', name: 'delete', orderable: false, searchable: false}
 

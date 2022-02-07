@@ -75,11 +75,11 @@
                     </a>
                     <ul class="nav nav-treeview " style=" {{$one=='kalem'?"display: block;":""}}">
                         <li class="nav-item ">
-                            <a href="{{route('kalem.yeni')}}" class="nav-link {{$two=='yeni'?"active":""}}">
+                            <a href="{{route('kalem.create')}}" class="nav-link {{$two=='create'?"active":""}}">
                                 <i class=" fas fa-shopping-cart  nav-icon"></i>Yeni Ekle</a>
                         </li>
                         <li class="nav-item ">
-                            <a href="{{route('kalem.liste')}}" class="nav-link {{$two=='liste'?"active":""}}">
+                            <a href="{{route('kalem.index')}}" class="nav-link {{$two=='liste'?"index":""}}">
                                 <i class="fas fa-bars nav-icon"></i>Listesi</a>
                         </li>
                     </ul>
@@ -113,17 +113,17 @@
                     </a>
                     <ul class="nav nav-treeview " style=" {{$one=='fatura'?"display: block;":""}}">
                         <li class="nav-item ">
-                            <a href="{{route('fatura.gelir')}}" class="nav-link {{$two=='gelir'?"active":""}}">
+                            <a href="{{route('fatura.create',0)}}" class="nav-link {{$two=='create'?"active":""}}">
 
                                 <i class=" fas fa-shopping-cart  nav-icon"></i>Yeni Gelir Ekle</a>
                         </li>
                         <li class="nav-item ">
-                            <a href="{{route('fatura.gider')}}" class="nav-link {{$two=='gider'?"active":""}}">
+                            <a href="{{route('fatura.create',1)}}" class="nav-link {{$two=='create'?"active":""}}">
 
                                 <i class=" fas fa-shopping-cart  nav-icon"></i>Yeni Gider Ekle</a>
                         </li>
                         <li class="nav-item ">
-                            <a href="{{route('fatura.liste')}}" class="nav-link {{$two=='liste'?"active":""}}">
+                            <a href="{{route('fatura.index')}}" class="nav-link {{$two=='index'?"active":""}}">
                                 <i class="fas fa-bars nav-icon"></i>Listesi</a>
                         </li>
                     </ul>
@@ -151,38 +151,6 @@
                 </li>
 
 
-                {{--                <li class="nav-item {{$one=='ecommerce'?" menu-is-opening menu-open":""}}">--}}
-                {{--                    <a href="#" class="nav-link {{$one=='ecommerce'?"active":""}}">--}}
-                {{--                        <i class="nav-icon fas fa-copy"></i>--}}
-                {{--                        <p> E-ticaret <i class="fas fa-angle-left right"></i>--}}
-                {{--                            <span class="badge badge-info right">6</span>--}}
-
-                {{--                        </p>--}}
-                {{--                    </a>--}}
-                {{--                    <ul class="nav nav-treeview " style=" {{$one=='ecommerce'?"display: block;":""}}">--}}
-
-                {{--                        <li class="nav-item ">--}}
-                {{--                            <a href="{{route('ecommerce.product.index')}}" class="nav-link {{$two=='product'?"active":""}}">--}}
-                {{--                                <i class=" fas fa-shopping-cart  nav-icon"></i> Ürünler </a>--}}
-                {{--                        </li>--}}
-                {{--                        <li class="nav-item ">--}}
-                {{--                            <a href="{{route('ecommerce.category.index')}}" class="nav-link {{$two=='category'?"active":""}}">--}}
-                {{--                                <i class="fas fa-bars nav-icon"></i> Kategoriler </a>--}}
-                {{--                        </li>--}}
-                {{--                        <li class="nav-item ">--}}
-                {{--                            <a href="{{route('ecommerce.brand.index')}}" class="nav-link {{$two=='brand'?"active":""}}">--}}
-                {{--                                <i class="fas fa-universal-access nav-icon"></i> Markalar </a>--}}
-                {{--                        </li>--}}
-                {{--                        <li class="nav-item ">--}}
-                {{--                            <a href="{{route('ecommerce.tags.index')}}" class="nav-link {{$two=='tags'?"active":""}}">--}}
-                {{--                                <i class="fas fa-tags nav-icon"></i> Etiketler </a>--}}
-                {{--                        </li>--}}
-                {{--                        <li class="nav-item ">--}}
-                {{--                            <a href="{{route('ecommerce.attribute_set.index')}}" class="nav-link {{$two=='tags'?"active":""}}">--}}
-                {{--                                <i class="fas fa-feather nav-icon"></i> Özellikler Listesi</a>--}}
-                {{--                        </li>--}}
-                {{--                    </ul>--}}
-                {{--                </li>--}}
 
             </ul>
         </nav>

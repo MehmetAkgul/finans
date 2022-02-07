@@ -36,8 +36,13 @@
 <script src="{{asset('js/app.js')}}"></script>
 <script src="{{asset('assets/plugins/jquery/jquery.min.js')}}"></script>
 <script src="{{asset('assets/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+
 <script> $.widget.bridge('uibutton', $.ui.button)</script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <script src="{{asset('assets/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+
 <script src="{{asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
 <script src="{{asset('assets/dist/js/adminlte.js')}}"></script>
 
@@ -51,6 +56,8 @@
 
 
 <script type="text/javascript">
+    $('.select2').select2();
+
     $.ajaxSetup({headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
     const Toast = Swal.mixin({
         toast: true,

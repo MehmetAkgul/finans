@@ -16,7 +16,7 @@ class CreateMusterilersTable extends Migration
         Schema::create('musterilers', function (Blueprint $table) {
             $table->id();
             $table->integer('musteriTipi')->default(0);
-            $table->integer('photo')->nullable();
+            $table->string('photo')->nullable();
 
             $table->string('ad')->nullable();;
             $table->string('soyad')->nullable();;
