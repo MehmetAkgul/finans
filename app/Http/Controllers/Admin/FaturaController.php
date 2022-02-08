@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Fatura;
+use App\Models\FaturaIslem;
 use App\Models\Kalem;
 use App\Models\Musteriler;
 use Illuminate\Contracts\Foundation\Application;
@@ -51,9 +52,32 @@ class FaturaController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $type = $request->route('type');
         $all = $request->except('_token');
+        $islem = $all['islem'];
+        unset($all['islem']);
+        $all['faturaTipi'] = $type;
+
 
         $create = Fatura::create($all);
+        if ($create) {
+            foreach ($islem as $k => $v) {
+                $islemArray = [
+                    'faturaId' => $create->id,
+                    'kalemId' => $v['kalemId'],
+                    'gun_adet' => $v['gun_adet'],
+                    'tutar' => $v['tutar'],
+                    'kdv' => $v['kdv'],
+                    'toplam_tutar' => $v['toplam_tutar'],
+                    'kdv_tutar' => $v['kdv_tutar'],
+                    'genel_toplam_tutar' => $v['genel_toplam_tutar'],
+                    'description' => $v['description'],
+                ];
+                FaturaIslem::create($islemArray);
+            }
+
+
+        };
         if ($create) {
             $notification = array('staus', 'Fatura Eklendi');
         } else {

@@ -35,7 +35,7 @@
                                     <a href="" class="btn btn-info btn-sm" type="button"> <i class="fa fa-file-excel"></i> Excel</a>
                                     <a href="" class="btn btn-default  btn-sm" type="button"> <i class="fa fa-file-pdf"></i> Pdf</a>
                                 </div>
-                                <table class="table table-bordered" id="example">
+                                <table class="table table-bordered" id="example1">
                                     <thead>
                                     <tr>
                                         <th>Fatura No</th>
@@ -70,8 +70,8 @@
     <script>
         $(document).ready(function () {
 
-            let table = $('#example').DataTable({
-                lengthMenu: [[25, 100, -1], [25, 100, "All"]],
+            let table = $('#example1').DataTable({
+                lengthMenu: [[25, 100, -1], [25, 100, "Tümü"]],
                 /*
                 dom: 'Blfrtip',
                 buttons: [

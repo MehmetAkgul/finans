@@ -126,7 +126,7 @@
                 '<td> <input type="text"  class="form-control" name=" islem[' + i + '][toplam_tutar]" id="toplam_tutar"> </td>' +
                 '<td> <input type="text"  class="form-control" name=" islem[' + i + '][kdv]" id="kdv"> </td>' +
                 '<td> <input type="text"  class="form-control" name=" islem[' + i + '][kdv_tutar]" id="kdv_tutar"> </td>' +
-                '<td> <input type="text"  class="form-control" name=" islem[' + i + '][genel_tutar]" id="genel_tutar"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem[' + i + '][genel_toplam_tutar]" id="genel_toplam_tutar"> </td>' +
                 '<td> <input type="text"  class="form-control" name=" islem[' + i + '][description]" id="description"> </td>' +
                 '<td> <button type="button" id="removeButton" class="btn btn-danger" > <i class="fa fa-trash"></i> </button> </td>' +
                 '</tr>'
@@ -147,43 +147,44 @@
             console.log("deneme");
 
 
-            if ($(this).is("#tutar", "#gun_adet", "#toplam_tutar", "#genel_tutar", "#kdv")) {
+            if ($(this).is("#tutar", "#gun_adet", "#toplam_tutar", "#genel_toplam_tutar", "#kdv")) {
                 let adet = $(this).closest("tr").find("#gun_adet").val();
                 let tutar = $(this).closest("tr").find("#tutar").val();
                 let kdv = $(this).closest("tr").find("#kdv").val();
                 let toplam_tutar;
-                let genel_tutar;
+                let genel_toplam_tutar;
                 let kdv_tutar;
 
                 if (adet === "" && tutar === "") {
                     toplam_tutar = $(this).closest("tr").find("#toplam_tutar").val();
                     if (toplam_tutar === "") {
-                        genel_tutar = parseFloat($(this).closest("tr").find("#genel_tutar").val());
-                        kdv_tutar = genel_tutar / (1 + kdv / 100);
-                        toplam_tutar = genel_tutar - kdv_tutar;
+                        genel_toplam_tutar = parseFloat($(this).closest("tr").find("#genel_toplam_tutar").val());
+                        kdv_tutar = genel_toplam_tutar / (1 + kdv / 100);
+                        toplam_tutar = genel_toplam_tutar - kdv_tutar;
                     } else {
                         toplam_tutar = parseFloat($(this).closest("tr").find("#toplam_tutar").val());
                         kdv_tutar = toplam_tutar * kdv / 100;
-                        genel_tutar = toplam_tutar + kdv_tutar;
+                        genel_toplam_tutar = toplam_tutar + kdv_tutar;
                     }
                 } else {
                     toplam_tutar = adet * tutar;
                     kdv_tutar = toplam_tutar * kdv / 100;
-                    genel_tutar = toplam_tutar + kdv_tutar;
+                    genel_toplam_tutar = toplam_tutar + kdv_tutar;
                 }
 
                 toplam_tutar = toplam_tutar.toFixed(2);
                 kdv_tutar = kdv_tutar.toFixed(2);
-                genel_tutar = genel_tutar.toFixed(2);
+                genel_toplam_tutar = genel_toplam_tutar.toFixed(2);
                 $(this).closest("tr").find("#toplam_tutar").val(toplam_tutar)
                 $(this).closest("tr").find("#kdv_tutar").val(kdv_tutar)
-                $(this).closest("tr").find("#genel_tutar").val(genel_tutar)
+                $(this).closest("tr").find("#genel_toplam_tutar").val(genel_toplam_tutar)
             }
             calc();
         })
 
         $("body").on("click", "#removeButton", function () {
             $(this).closest(".islem_field").remove();
+            calc()
         })
 
         function calc() {
@@ -199,7 +200,7 @@
                 ara_toplam = parseFloat(ara_toplam) + parseFloat($(this).val());
             })
 
-            $("[id=genel_tutar]").each(function () {
+            $("[id=genel_toplam_tutar]").each(function () {
                 genel_toplam = parseFloat(genel_toplam) + parseFloat($(this).val());
             })
 
