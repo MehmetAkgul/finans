@@ -13,7 +13,7 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header ">
-                                <h4>Kalem Listesi</h4>
+                                <h4>Fatura Listesi</h4>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body ">

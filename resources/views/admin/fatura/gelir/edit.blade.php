@@ -13,50 +13,110 @@
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-header ">
-                                <div class="float-left">
-                                    <h4>Kalem Düzenle</h4>
-                                </div>
-
-                                <div class="float-right">
-                                    <label for="">{{$data->ad}} </label>
-                                </div>
+                                <h4>Fatura Düzenle</h4>
                             </div>
                             <!-- /.card-header -->
                             <div class="card-body ">
 
-                                <form action="{{route('kalem.update',[$data->id])}}" method="POST" enctype='multipart/form-data'>
+                                <form action="{{route('fatura.update',['id'=>$data->id])}}" method="POST" enctype='multipart/form-data'>
                                     @csrf
-                                    <div class="row form-group">
-                                        <label for="" class="col-form-label">Müşteri Tipi</label>
+
+                                    <div class="col-md-12 row fatura-area">
+                                        <div class="form-group col-md-4">
+                                            <label for="name">Fatura No</label>
+                                            <input type="text" name="faturaNo" class="form-control" required value="{{$data->faturaNo}}">
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="name">Müşteri Seçiniz</label>
+
+                                            <select class="form-control select2">
+                                                @foreach($musteriler as $k=>$v)
+                                                    <option value="{{$v->id}}"
+                                                            @if ($data->musterId==$v->id)selected @endif >{{\App\Models\Musteriler::getPublicName($v->id)}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="name">Fatura Tarihi</label>
+                                            <input type="date" name="faturaTarihi" class="form-control" value="{{$data->faturaTarihi}}">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table id="faturaData" class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th>Kalem</th>
+                                                    <th>Adet/Gün</th>
+                                                    <th>Tutar</th>
+                                                    <th>Toplam Tutar</th>
+                                                    <th>Kdv</th>
+                                                    <th>Kdv Toplam</th>
+                                                    <th>Genel Toplam</th>
+                                                    <th>Açıklama</th>
+                                                    <th>Kaldır</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                @foreach($dataIslem as $k=>$v )
+                                                    <tr class="islem_field">
+                                                        <td>
+                                                            <select name="islem[{{$k}}][kalemId]" class="form-control kalem">
+                                                                <option value="0"> Kalem Seçiniz</option>
+                                                                @foreach($kalem as $key=>$val )
+                                                                    <option @if ($v->kalemId==$val->id) selected @endif data-kdv="{{$val->kdv}}"
+                                                                            value="{{$val->id}}">{{$val->ad}}</option>
+                                                                @endforeach
+                                                            </select>
+                                                        </td>
+                                                        <td><input type="text" class="form-control" name=" islem[{{$k}}][gun_adet]" id="gun_adet"
+                                                                   value="{{$v->gun_adet}}"></td>
+                                                        <td><input type="text" class="form-control" name=" islem[{{$k}}][tutar]" id="tutar"
+                                                                   value="{{$v->tutar}}"></td>
+                                                        <td><input type="text" class="form-control" name=" islem[{{$k}}][toplam_tutar]"
+                                                                   id="toplam_tutar" value="{{$v->toplam_tutar}}"></td>
+                                                        <td><input type="text" class="form-control" name=" islem[{{$k}}][kdv]" id="kdv"
+                                                                   value="{{$v->kdv}}"></td>
+                                                        <td><input type="text" class="form-control" name=" islem[{{$k}}][kdv_tutar]" id="kdv_tutar"
+                                                                   value="{{$v->kdv_tutar}}"></td>
+                                                        <td><input type="text" class="form-control" name=" islem[{{$k}}][genel_toplam_tutar]"
+                                                                   id="genel_toplam_tutar" value="{{$v->genel_toplam_tutar}}"></td>
+                                                        <td><input type="text" class="form-control" name=" islem[{{$k}}][description]"
+                                                                   id="description" value="{{$v->description}}"></td>
+                                                        <td>
+                                                            <button type="button" id="removeButton" class="btn btn-danger"><i class="fa fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary btn-block" id="addRowBtn">EKLE</button>
+                                    <div class="clearfix"></div>
+                                    <div class="row">
                                         <div class="col-md-12">
-                                            <div>
-                                                <input type="radio" class="  change-customer-type" name="kalemTipi" id="gelir" {{$data->kalemTipi==0?"checked":""}} value="0">
-                                                <label for="gelir" class="col-form-label">Gelir</label>
-                                            </div>
-                                            <div>
-                                                <input type="radio" class=" change-customer-type" name="kalemTipi" id="gider" {{$data->kalemTipi==1?"checked":""}}  value="1">
-                                                <label for="gider" class="col-form-label">Gider</label>
-                                            </div>
+                                            <table id="faturaData" class="table ">
+
+                                                <tr>
+                                                    <td class=" ">Ara Toplam</td>
+                                                    <td class=" float-right  ara_toplam">0.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=" ">Kdv Toplam</td>
+                                                    <td class=" float-right  kdv_toplam">0.00</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class=" ">Genel Toplam</td>
+                                                    <td class="float-right   genel_toplam">0.00</td>
+                                                </tr>
+
+                                            </table>
                                         </div>
                                     </div>
-
-                                    <div class="col-md-12 row kalem-area"  >
-                                        <div class="form-group col-md-6">
-                                            <label for="name">Kalem Adı</label>
-                                            <input type="text" name="ad" class="form-control" id="ad" required value="{{$data->ad}}"
-                                                   placeholder=" Firma Adı Giriniz.">
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <label for="name">Kdv</label>
-                                            <input type="text" name="kdv" class="form-control" id="kdv" required  value="{{$data->kdv}}"
-                                                   placeholder="Vergi Numarası Giriniz.">
-                                        </div>
-
-                                    </div>
-
-
                                     <div class="form-group float-right">
-                                        <button class="btn btn-success" type="submit"> Güncelle</button>
+                                        <button class="btn btn-success" type="submit"> Kaydet</button>
                                     </div>
                                 </form>
 
@@ -83,6 +143,107 @@
 
 
     <script>
+        $(document).ready(function () {
+            calc();
+        });
+
+        let i = $('.islem_field').length;
+        $('#addRowBtn').click(function () {
+            let newRow =
+                '<tr class="islem_field">' +
+                '<td> <select   name="islem[{{$k}}][kalemId]" class="form-control kalem"> ' +
+                '<option value="0"> Kalem Seçiniz </option>';
+            @foreach($kalem as $k=>$v )
+                newRow += '<option data-kdv="{{$v->kdv}}" value="{{$v->id}}">{{$v->ad}}</option>';
+            @endforeach
+                newRow += '</select></td>' +
+                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][gun_adet]" id="gun_adet"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][tutar]" id="tutar"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][toplam_tutar]" id="toplam_tutar"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][kdv]" id="kdv"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][kdv_tutar]" id="kdv_tutar"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][genel_toplam_tutar]" id="genel_toplam_tutar"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][description]" id="description"> </td>' +
+                '<td> <button type="button" id="removeButton" class="btn btn-danger" > <i class="fa fa-trash"></i> </button> </td>' +
+                '</tr>'
+
+            $('#faturaData').append(newRow);
+            i++;
+        })
+
+        $("body").on("change", ".kalem", function () {
+
+            let kdv = $(this).find(":selected").data("kdv");
+            console.log(kdv)
+            $(this).closest(".islem_field").find("#kdv").val(kdv);
+        })
+
+        $("body").on("change", "#faturaData input", function () {
+
+            console.log("deneme");
+
+
+            if ($(this).is("#tutar", "#gun_adet", "#toplam_tutar", "#genel_toplam_tutar", "#kdv")) {
+                let adet = $(this).closest("tr").find("#gun_adet").val();
+                let tutar = $(this).closest("tr").find("#tutar").val();
+                let kdv = $(this).closest("tr").find("#kdv").val();
+                let toplam_tutar;
+                let genel_toplam_tutar;
+                let kdv_tutar;
+
+                if (adet === "" && tutar === "") {
+                    toplam_tutar = $(this).closest("tr").find("#toplam_tutar").val();
+                    if (toplam_tutar === "") {
+                        genel_toplam_tutar = parseFloat($(this).closest("tr").find("#genel_toplam_tutar").val());
+                        kdv_tutar = genel_toplam_tutar / (1 + kdv / 100);
+                        toplam_tutar = genel_toplam_tutar - kdv_tutar;
+                    } else {
+                        toplam_tutar = parseFloat($(this).closest("tr").find("#toplam_tutar").val());
+                        kdv_tutar = toplam_tutar * kdv / 100;
+                        genel_toplam_tutar = toplam_tutar + kdv_tutar;
+                    }
+                } else {
+                    toplam_tutar = adet * tutar;
+                    kdv_tutar = toplam_tutar * kdv / 100;
+                    genel_toplam_tutar = toplam_tutar + kdv_tutar;
+                }
+
+                toplam_tutar = toplam_tutar.toFixed(2);
+                kdv_tutar = kdv_tutar.toFixed(2);
+                genel_toplam_tutar = genel_toplam_tutar.toFixed(2);
+                $(this).closest("tr").find("#toplam_tutar").val(toplam_tutar)
+                $(this).closest("tr").find("#kdv_tutar").val(kdv_tutar)
+                $(this).closest("tr").find("#genel_toplam_tutar").val(genel_toplam_tutar)
+            }
+            calc();
+        })
+
+        $("body").on("click", "#removeButton", function () {
+            $(this).closest(".islem_field").remove();
+            calc()
+        })
+
+        function calc() {
+            let kdv_toplam = 0;
+            let ara_toplam = 0;
+            let genel_toplam = 0;
+
+            $("[id=kdv_tutar]").each(function () {
+                kdv_toplam = parseFloat(kdv_toplam) + parseFloat($(this).val());
+            })
+
+            $("[id=toplam_tutar]").each(function () {
+                ara_toplam = parseFloat(ara_toplam) + parseFloat($(this).val());
+            })
+
+            $("[id=genel_toplam_tutar]").each(function () {
+                genel_toplam = parseFloat(genel_toplam) + parseFloat($(this).val());
+            })
+
+            $('.ara_toplam').html(ara_toplam);
+            $('.kdv_toplam').html(kdv_toplam);
+            $('.genel_toplam').html(genel_toplam);
+        }
 
     </script>
 @endsection()

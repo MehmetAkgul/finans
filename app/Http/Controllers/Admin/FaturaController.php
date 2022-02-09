@@ -108,8 +108,20 @@ class FaturaController extends Controller
     {
         $c = Fatura::where('id', $id)->count();
         if ($c != 0) {
+
             $data = Fatura::where('id', $id)->first();
-            return view('admin.fatura.edit', compact('data'));
+            $dataIslem = FaturaIslem::where('faturaId', $id)->get();
+            $musteriler = Musteriler::all();
+            $kalem = Kalem::where('kalemTipi', $data->faturaTipi)->get();
+            if ($data->faturaTipi == 0) {
+                //gelir
+
+                return view('admin.fatura.gelir.edit', compact('data','dataIslem','musteriler','kalem'));
+            } else {
+                //gider
+            }
+
+            return view('admin.fatura.gider.edit', compact('data','dataIslem'));
         } else {
             return redirect('/');
         }
