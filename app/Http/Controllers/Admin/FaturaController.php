@@ -40,7 +40,7 @@ class FaturaController extends Controller
         if ($type == 0) {
             return view('admin.fatura.gelir.create', compact('musteriler', 'kalem'));
         } else {
-            return view('admin.fatura.gelir.create', compact('musteriler', 'kalem'));
+            return view('admin.fatura.gider.create', compact('musteriler', 'kalem'));
         }
     }
 
@@ -52,32 +52,41 @@ class FaturaController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+
+        $create = false;
+
         $type = $request->route('type');
         $all = $request->except('_token');
         $islem = $all['islem'];
         unset($all['islem']);
         $all['faturaTipi'] = $type;
 
-
-        $create = Fatura::create($all);
-        if ($create) {
-            foreach ($islem as $k => $v) {
-                $islemArray = [
-                    'faturaId' => $create->id,
-                    'kalemId' => $v['kalemId'],
-                    'gun_adet' => $v['gun_adet'],
-                    'tutar' => $v['tutar'],
-                    'kdv' => $v['kdv'],
-                    'toplam_tutar' => $v['toplam_tutar'],
-                    'kdv_tutar' => $v['kdv_tutar'],
-                    'genel_toplam_tutar' => $v['genel_toplam_tutar'],
-                    'description' => $v['description'],
-                ];
-                FaturaIslem::create($islemArray);
+        $control = Fatura::where('faturaNo', $all['faturaNo'])->count();
+        if ($control == 0) {
+            $create = Fatura::create($all);
+            if ($create) {
+                if (count($islem) != 0) {
+                    foreach ($islem as $k => $v) {
+                        $islemArray = [
+                            'faturaId' => $create->id,
+                            'kalemId' => $v['kalemId'],
+                            'gun_adet' => $v['gun_adet'],
+                            'tutar' => $v['tutar'],
+                            'kdv' => $v['kdv'],
+                            'toplam_tutar' => $v['toplam_tutar'],
+                            'kdv_tutar' => $v['kdv_tutar'],
+                            'genel_toplam_tutar' => $v['genel_toplam_tutar'],
+                            'description' => $v['description'],
+                        ];
+                        FaturaIslem::create($islemArray);
+                    }
+                }
             }
+        } else {
+            $notification = array('staus', 'Bu Fatura Mevcut');
+            return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
+        }
 
-
-        };
         if ($create) {
             $notification = array('staus', 'Fatura Eklendi');
         } else {
@@ -93,7 +102,8 @@ class FaturaController extends Controller
      * @param int $id
      * @return Response
      */
-    public function show($id)
+    public
+    function show($id)
     {
         //
     }
@@ -104,24 +114,30 @@ class FaturaController extends Controller
      * @param int $id
      * @return Application|Factory|View
      */
-    public function edit($id)
+    public
+    function edit($id)
     {
         $c = Fatura::where('id', $id)->count();
         if ($c != 0) {
 
             $data = Fatura::where('id', $id)->first();
+
+         //  dd($data);
+
+
             $dataIslem = FaturaIslem::where('faturaId', $id)->get();
             $musteriler = Musteriler::all();
             $kalem = Kalem::where('kalemTipi', $data->faturaTipi)->get();
             if ($data->faturaTipi == 0) {
-                //gelir
 
-                return view('admin.fatura.gelir.edit', compact('data','dataIslem','musteriler','kalem'));
+
+                return view('admin.fatura.gelir.edit', compact('data', 'dataIslem', 'musteriler', 'kalem'));
             } else {
-                //gider
+                return view('admin.fatura.gider.edit', compact('data', 'dataIslem', 'musteriler', 'kalem'));
+
             }
 
-            return view('admin.fatura.gider.edit', compact('data','dataIslem'));
+            return view('admin.fatura.gider.edit', compact('data', 'dataIslem'));
         } else {
             return redirect('/');
         }
@@ -134,14 +150,38 @@ class FaturaController extends Controller
      * @param int $id
      * @return RedirectResponse
      */
-    public function update(Request $request, $id)
+    public
+    function update(Request $request, $id)
     {
+
+
         $c = Fatura::where('id', $id)->count();
         if ($c != 0) {
 
             $all = $request->except('_token');
+            $islem = $all['islem'];
+            unset($all['islem']);
+
+            if (count($islem) != 0) {
+                FaturaIslem::where('faturaId', $id)->delete();
+                foreach ($islem as $k => $v) {
+                    $islemArray = [
+                        'faturaId' => $id,
+                        'kalemId' => $v['kalemId'],
+                        'gun_adet' => $v['gun_adet'],
+                        'tutar' => $v['tutar'],
+                        'kdv' => $v['kdv'],
+                        'toplam_tutar' => $v['toplam_tutar'],
+                        'kdv_tutar' => $v['kdv_tutar'],
+                        'genel_toplam_tutar' => $v['genel_toplam_tutar'],
+                        'description' => $v['description'],
+                    ];
+                    FaturaIslem::create($islemArray);
+                }
+            }
 
             $update = Fatura::where('id', $id)->update($all);
+
             if ($update) {
                 $notification = array('staus', 'Gelir $ Gider Faturai Düzenlendi');
             } else {
@@ -162,7 +202,8 @@ class FaturaController extends Controller
      * @param int $id
      * @return RedirectResponse
      */
-    public function delete($id)
+    public
+    function delete($id)
     {
         $c = Fatura::where('id', $id)->count();
 
@@ -190,7 +231,8 @@ class FaturaController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function data(Request $request)
+    public
+    function data(Request $request)
     {
         $table = Fatura::query();
         $data = DataTables::of($table)

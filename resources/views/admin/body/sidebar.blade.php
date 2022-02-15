@@ -84,6 +84,7 @@
                         </li>
                     </ul>
                 </li>
+
                 <li class="nav-item {{$one=='islem'?" menu-is-opening menu-open":""}}">
                     <a href="#" class="nav-link {{$one=='islem'?"active":""}}">
                         <i class="nav-icon fas fa-copy"></i>
@@ -94,15 +95,20 @@
                     </a>
                     <ul class="nav nav-treeview " style=" {{$one=='islem'?"display: block;":""}}">
                         <li class="nav-item ">
-                            <a href="{{route('islem.odeme')}}" class="nav-link {{$two=='odeme'?"active":""}}">
+                            <a href="{{route('islem.create',ISLEM_ODEME)}}" class="nav-link {{$two=='create'?"active":""}}">
                                 <i class=" fas fa-shopping-cart  nav-icon"></i>Ödeme Yap</a>
                         </li>
                         <li class="nav-item ">
-                            <a href="{{route('islem.tahsilat')}}" class="nav-link {{$two=='tahsilat'?"active":""}}">
+                            <a href="{{route('islem.create',ISLEM_TAHSILAT)}}" class="nav-link {{$two=='create'?"active":""}}">
                                 <i class="fas fa-bars nav-icon"></i>Tahsilat Al</a>
+                        </li>
+                        <li class="nav-item ">
+                            <a href="{{route('islem.index')}}" class="nav-link {{$two=='index'?"active":""}}">
+                                <i class="fas fa-bars nav-icon"></i>Listesi</a>
                         </li>
                     </ul>
                 </li>
+
                 <li class="nav-item {{$one=='fatura'?" menu-is-opening menu-open":""}}">
                     <a href="#" class="nav-link {{$one=='fatura'?"active":""}}">
                         <i class="nav-icon fas fa-copy"></i>
@@ -138,18 +144,17 @@
                     </a>
                     <ul class="nav nav-treeview " style=" {{$one=='banka'?"display: block;":""}}">
                         <li class="nav-item ">
-                            <a href="{{route('banka.yeni')}}" class="nav-link {{$two=='yeni'?"active":""}}">
+                            <a href="{{route('banka.create')}}" class="nav-link {{$two=='create'?"active":""}}">
 
                                 <i class=" fas fa-shopping-cart  nav-icon"></i>Yeni Banka Ekle</a>
                         </li>
 
                         <li class="nav-item ">
-                            <a href="{{route('banka.liste')}}" class="nav-link {{$two=='liste'?"active":""}}">
+                            <a href="{{route('banka.index')}}" class="nav-link {{$two=='index'?"active":""}}">
                                 <i class="fas fa-bars nav-icon"></i>Bankaları Listesi</a>
                         </li>
                     </ul>
                 </li>
-
 
 
             </ul>

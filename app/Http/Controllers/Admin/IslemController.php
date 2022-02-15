@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
- use App\Http\Controllers\Controller;
-use App\Models\Kalem;
+use App\Http\Controllers\Controller;
+
+use App\Models\Banka;
+use App\Models\Fatura;
+use App\Models\Islem;
+use App\Models\Musteriler;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
- use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Facades\DataTables;
 
-class KalemController extends Controller
+class IslemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,8 +25,8 @@ class KalemController extends Controller
      */
     public function index()
     {
-        $data = Kalem::paginate(10);
-        return view('admin.kalem.index', compact('data'));
+
+        return view('admin.islem.index');
     }
 
     /**
@@ -30,9 +34,15 @@ class KalemController extends Controller
      *
      * @return Application|Factory|View
      */
-    public function create()
+    public function create($type)
     {
-        return view('admin.kalem.create');
+        $musteriler = Musteriler::all();
+        $banka = Banka::all();
+        if ($type == 0) {
+            return view('admin.islem.odeme.create', compact('musteriler', 'banka'));
+        } else {
+            return view('admin.islem.tahsilat.create', compact('musteriler', 'banka'));
+        }
     }
 
     /**
@@ -43,11 +53,13 @@ class KalemController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $all = $request->except('_token');
 
-        $create = Kalem::create($all);
+
+        $all = $request->except('_token');
+    //    dd($all);
+        $create = Islem::create($all);
         if ($create) {
-            $notification = array('staus', 'Gelir $ Gider Kalemi Eklendi');
+            $notification = array('staus', 'Fatura Eklendi');
         } else {
             $notification = array('staus', 'Bir hata oluştu');
         }
@@ -61,7 +73,8 @@ class KalemController extends Controller
      * @param int $id
      * @return Response
      */
-    public function show($id)
+    public
+    function show($id)
     {
         //
     }
@@ -72,12 +85,19 @@ class KalemController extends Controller
      * @param int $id
      * @return Application|Factory|View
      */
-    public function edit($id)
+    public
+    function edit($id)
     {
-        $c = Kalem::where('id', $id)->count();
+        $c = Islem::where('id', $id)->count();
         if ($c != 0) {
-            $data = Kalem::where('id', $id)->first();
-            return  view('admin.kalem.edit', compact('data'));
+            $data = Islem::where('id', $id)->first();
+            $musteriler = Musteriler::all();
+            $banka = Banka::all();
+            if ($data->islemTipi == 0) {
+                return view('admin.islem.odeme.edit', compact('data', 'musteriler', 'banka'));
+            } else {
+                return view('admin.islem.tahsilat.edit', compact('data', 'musteriler', 'banka'));
+            }
         } else {
             return redirect('/');
         }
@@ -90,16 +110,20 @@ class KalemController extends Controller
      * @param int $id
      * @return RedirectResponse
      */
-    public function update(Request $request, $id)
+    public
+    function update(Request $request, $id)
     {
-        $c = Kalem::where('id', $id)->count();
+
+
+        $c = Islem::where('id', $id)->count();
         if ($c != 0) {
 
             $all = $request->except('_token');
 
-            $update = Kalem::where('id', $id)->update($all);
+            $update = Islem::where('id', $id)->update($all);
+
             if ($update) {
-                $notification = array('staus', 'Gelir $ Gider Kalemi Düzenlendi');
+                $notification = array('staus', 'İslem Düzenlendi');
             } else {
                 $notification = array('staus', 'Bir hata oluştu');
             }
@@ -118,15 +142,16 @@ class KalemController extends Controller
      * @param int $id
      * @return RedirectResponse
      */
-    public function delete($id)
+    public
+    function delete($id)
     {
-        $c = Kalem::where('id', $id)->count();
+        $c = Islem::where('id', $id)->count();
 
         if ($c != 0) {
 
-            $delete = Kalem::where('id', $id)->delete();
+            $delete = Islem::where('id', $id)->delete();
             if ($delete) {
-                $notification = array('staus', 'Gelir $ Gider Kalemi Düzenlendi');
+                $notification = array('staus', 'Gelir $ Gider Faturai Düzenlendi');
             } else {
                 $notification = array('staus', 'Bir hata oluştu');
             }
@@ -146,21 +171,28 @@ class KalemController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function data(Request $request)
+    public
+    function data(Request $request)
     {
-        $table = Kalem::query();
+        $table = Islem::query();
         $data = DataTables::of($table)
             ->addColumn('edit', function ($table) {
-                return '<a href="' . route('kalem.edit', ['id' => $table->id]) . '">Düzenle</a>';
+                return '<a href="' . route('islem.edit', ['id' => $table->id]) . '">Düzenle</a>';
             })
             ->addColumn('delete', function ($table) {
-                return '<a href="' . route('kalem.delete', ['id' => $table->id]) . '">Sil</a>';
+                return '<a href="' . route('islem.delete', ['id' => $table->id]) . '">Sil</a>';
             })
-            ->editColumn('kalemTipi', function ($table) {
-                if ($table->kalemTipi == 0) {
-                    return "Gelir";
+            ->addColumn('musteri', function ($table) {
+                return Musteriler::getPublicName($table->musteriId);
+            })
+            ->addColumn('faturaNo', function ($table) {
+                return Fatura::getNo($table->faturaId);
+            })
+            ->editColumn('type', function ($table) {
+                if ($table->type == 0) {
+                    return "Ödeme";
                 } else {
-                    return "Gider";
+                    return "Tahsilat";
                 }
             })
             ->rawColumns(['edit', 'delete'])

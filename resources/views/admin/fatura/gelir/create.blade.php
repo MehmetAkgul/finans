@@ -29,7 +29,7 @@
                                         <div class="form-group col-md-4">
                                             <label for="name">Müşteri Seçiniz</label>
 
-                                            <select class="form-control select2">
+                                            <select class="form-control select2" name="musteriId">
                                                 @foreach($musteriler as $k=>$v)
                                                     <option value="{{$v->id}}">{{\App\Models\Musteriler::getPublicName($v->id)}}</option>
                                                 @endforeach
@@ -63,7 +63,7 @@
                                     <div class="clearfix"></div>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <table id="faturaData" class="table ">
+                                            <table id="faturaData1" class="table ">
 
                                                 <tr>
                                                     <td class=" ">Ara Toplam</td>
@@ -111,8 +111,10 @@
     <script>
 
 
-        let i = $('.islem_field').length;
+        let i = ($('.islem_field').length);
+
         $('#addRowBtn').click(function () {
+
             let newRow =
                 '<tr class="islem_field">' +
                 '<td> <select   name="islem[' + i + '][kalemId]" class="form-control kalem"> ' +
@@ -138,13 +140,13 @@
         $("body").on("change", ".kalem", function () {
 
             let kdv = $(this).find(":selected").data("kdv");
-            console.log(kdv)
+
             $(this).closest(".islem_field").find("#kdv").val(kdv);
         })
 
         $("body").on("change", "#faturaData input", function () {
 
-            console.log("deneme");
+
 
 
             if ($(this).is("#tutar", "#gun_adet", "#toplam_tutar", "#genel_toplam_tutar", "#kdv")) {

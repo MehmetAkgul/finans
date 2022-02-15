@@ -29,10 +29,10 @@
                                         <div class="form-group col-md-4">
                                             <label for="name">Müşteri Seçiniz</label>
 
-                                            <select class="form-control select2">
+                                            <select class="form-control select2" name="musteriId">
                                                 @foreach($musteriler as $k=>$v)
                                                     <option value="{{$v->id}}"
-                                                            @if ($data->musterId==$v->id)selected @endif >{{\App\Models\Musteriler::getPublicName($v->id)}}</option>
+                                                            @if ($data->musteriId==$v->id)selected @endif >{{\App\Models\Musteriler::getPublicName($v->id)}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -97,7 +97,7 @@
                                     <div class="clearfix"></div>
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <table id="faturaData" class="table ">
+                                            <table id="faturaData1" class="table ">
 
                                                 <tr>
                                                     <td class=" ">Ara Toplam</td>
@@ -116,7 +116,7 @@
                                         </div>
                                     </div>
                                     <div class="form-group float-right">
-                                        <button class="btn btn-success" type="submit"> Kaydet</button>
+                                        <button class="btn btn-success" type="submit"> Güncelle</button>
                                     </div>
                                 </form>
 
@@ -149,21 +149,22 @@
 
         let i = $('.islem_field').length;
         $('#addRowBtn').click(function () {
+            console.log(i);
             let newRow =
                 '<tr class="islem_field">' +
-                '<td> <select   name="islem[{{$k}}][kalemId]" class="form-control kalem"> ' +
+                '<td> <select   name="islem['+i+'][kalemId]" class="form-control kalem"> ' +
                 '<option value="0"> Kalem Seçiniz </option>';
             @foreach($kalem as $k=>$v )
                 newRow += '<option data-kdv="{{$v->kdv}}" value="{{$v->id}}">{{$v->ad}}</option>';
             @endforeach
                 newRow += '</select></td>' +
-                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][gun_adet]" id="gun_adet"> </td>' +
-                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][tutar]" id="tutar"> </td>' +
-                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][toplam_tutar]" id="toplam_tutar"> </td>' +
-                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][kdv]" id="kdv"> </td>' +
-                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][kdv_tutar]" id="kdv_tutar"> </td>' +
-                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][genel_toplam_tutar]" id="genel_toplam_tutar"> </td>' +
-                '<td> <input type="text"  class="form-control" name=" islem[{{$k}}][description]" id="description"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem['+i+'][gun_adet]" id="gun_adet"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem['+i+'][tutar]" id="tutar"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem['+i+'][toplam_tutar]" id="toplam_tutar"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem['+i+'][kdv]" id="kdv"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem['+i+'][kdv_tutar]" id="kdv_tutar"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem['+i+'][genel_toplam_tutar]" id="genel_toplam_tutar"> </td>' +
+                '<td> <input type="text"  class="form-control" name=" islem['+i+'][description]" id="description"> </td>' +
                 '<td> <button type="button" id="removeButton" class="btn btn-danger" > <i class="fa fa-trash"></i> </button> </td>' +
                 '</tr>'
 
@@ -174,13 +175,13 @@
         $("body").on("change", ".kalem", function () {
 
             let kdv = $(this).find(":selected").data("kdv");
-            console.log(kdv)
+
             $(this).closest(".islem_field").find("#kdv").val(kdv);
         })
 
         $("body").on("change", "#faturaData input", function () {
 
-            console.log("deneme");
+
 
 
             if ($(this).is("#tutar", "#gun_adet", "#toplam_tutar", "#genel_toplam_tutar", "#kdv")) {

@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\BankaController;
 use App\Http\Controllers\Admin\FaturaController;
 use App\Http\Controllers\Admin\HomeController;
+use App\Http\Controllers\Admin\IslemController;
 use App\Http\Controllers\Admin\KalemController;
 use App\Http\Controllers\Admin\MusteriController;
 use Illuminate\Support\Facades\Route;
@@ -46,10 +48,28 @@ Route::prefix('fatura')->name('fatura.')->group(function () {
     Route::post('/data', [FaturaController::class, 'data'])->name('data');
 });
 
-Route::prefix('banka')->group(function () {
-    Route::get('/yeni', [MusteriController::class, 'yeni'])->name('banka.yeni');
-    Route::get('/liste', [MusteriController::class, 'liste'])->name('banka.liste');
+Route::prefix('banka')->name('banka.')->group(function () {
+    Route::get('/index', [BankaController::class, 'index'])->name('index');
+    Route::get('/create', [BankaController::class, 'create'])->name('create');
+    Route::post('/store', [BankaController::class, 'store'])->name('store');
+    Route::get('/edit/{id}', [BankaController::class, 'edit'])->name('edit');
+    Route::post('/update/{id}', [BankaController::class, 'update'])->name('update');
+    Route::get('/delete/{id}', [BankaController::class, 'delete'])->name('delete');
+    Route::post('/data', [BankaController::class, 'data'])->name('data');
 });
+
+
+Route::prefix('islem')->name('islem.')->group(function () {
+    Route::get('/index', [IslemController::class, 'index'])->name('index');
+    Route::get('/create/{type}', [IslemController::class, 'create'])->name('create');
+    Route::post('/store', [IslemController::class, 'store'])->name('store');
+    Route::get('/edit/{id}', [IslemController::class, 'edit'])->name('edit');
+    Route::post('/update/{id}', [IslemController::class, 'update'])->name('update');
+    Route::get('/delete/{id}', [IslemController::class, 'delete'])->name('delete');
+    Route::post('/data', [IslemController::class, 'data'])->name('data');
+});
+
+
 
 
 

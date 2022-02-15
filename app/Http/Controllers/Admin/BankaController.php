@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
- use App\Http\Controllers\Controller;
-use App\Models\Kalem;
+use App\Http\Controllers\Controller;
+use App\Models\Banka;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
- use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Facades\DataTables;
 
-class KalemController extends Controller
+class BankaController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -21,8 +21,8 @@ class KalemController extends Controller
      */
     public function index()
     {
-        $data = Kalem::paginate(10);
-        return view('admin.kalem.index', compact('data'));
+        $data = Banka::paginate(10);
+        return view('admin.banka.index', compact('data'));
     }
 
     /**
@@ -32,7 +32,7 @@ class KalemController extends Controller
      */
     public function create()
     {
-        return view('admin.kalem.create');
+        return view('admin.banka.create');
     }
 
     /**
@@ -45,9 +45,9 @@ class KalemController extends Controller
     {
         $all = $request->except('_token');
 
-        $create = Kalem::create($all);
+        $create = Banka::create($all);
         if ($create) {
-            $notification = array('staus', 'Gelir $ Gider Kalemi Eklendi');
+            $notification = array('staus', 'Gelir $ Gider Bankai Eklendi');
         } else {
             $notification = array('staus', 'Bir hata oluştu');
         }
@@ -74,10 +74,10 @@ class KalemController extends Controller
      */
     public function edit($id)
     {
-        $c = Kalem::where('id', $id)->count();
+        $c = Banka::where('id', $id)->count();
         if ($c != 0) {
-            $data = Kalem::where('id', $id)->first();
-            return  view('admin.kalem.edit', compact('data'));
+            $data = Banka::where('id', $id)->first();
+            return  view('admin.banka.edit', compact('data'));
         } else {
             return redirect('/');
         }
@@ -92,14 +92,14 @@ class KalemController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $c = Kalem::where('id', $id)->count();
+        $c = Banka::where('id', $id)->count();
         if ($c != 0) {
 
             $all = $request->except('_token');
 
-            $update = Kalem::where('id', $id)->update($all);
+            $update = Banka::where('id', $id)->update($all);
             if ($update) {
-                $notification = array('staus', 'Gelir $ Gider Kalemi Düzenlendi');
+                $notification = array('staus', 'Gelir $ Gider Bankai Düzenlendi');
             } else {
                 $notification = array('staus', 'Bir hata oluştu');
             }
@@ -120,13 +120,13 @@ class KalemController extends Controller
      */
     public function delete($id)
     {
-        $c = Kalem::where('id', $id)->count();
+        $c = Banka::where('id', $id)->count();
 
         if ($c != 0) {
 
-            $delete = Kalem::where('id', $id)->delete();
+            $delete = Banka::where('id', $id)->delete();
             if ($delete) {
-                $notification = array('staus', 'Gelir $ Gider Kalemi Düzenlendi');
+                $notification = array('staus', 'Gelir $ Gider Bankai Düzenlendi');
             } else {
                 $notification = array('staus', 'Bir hata oluştu');
             }
@@ -148,25 +148,18 @@ class KalemController extends Controller
      */
     public function data(Request $request)
     {
-        $table = Kalem::query();
+        $table = Banka::query();
         $data = DataTables::of($table)
             ->addColumn('edit', function ($table) {
-                return '<a href="' . route('kalem.edit', ['id' => $table->id]) . '">Düzenle</a>';
+                return '<a href="' . route('banka.edit', ['id' => $table->id]) . '">Düzenle</a>';
             })
             ->addColumn('delete', function ($table) {
-                return '<a href="' . route('kalem.delete', ['id' => $table->id]) . '">Sil</a>';
+                return '<a href="' . route('banka.delete', ['id' => $table->id]) . '">Sil</a>';
             })
-            ->editColumn('kalemTipi', function ($table) {
-                if ($table->kalemTipi == 0) {
-                    return "Gelir";
-                } else {
-                    return "Gider";
-                }
-            })
+
             ->rawColumns(['edit', 'delete'])
             ->make(true);
         return $data;
     }
-
 
 }
