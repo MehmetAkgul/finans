@@ -37,10 +37,11 @@
 
         <li class="nav-item dropdown">
 
-            <a class="nav-link" data-toggle="dropdown" href="#"> deneme </a>
+            <a class="nav-link" data-toggle="dropdown" href="#"> {{\Auth::user()->name}} </a>
 
             <div class="dropdown-menu  dropdown-menu-right">
-                <a class="nav-link"   href="#"> deneme </a>
+                <a class="nav-link"   href="{{route('profil.index')}}"> Profil </a>
+                <a class="nav-link"   href="{{route('logout')}}"> Çıkış </a>
             </div>
 
         </li>
