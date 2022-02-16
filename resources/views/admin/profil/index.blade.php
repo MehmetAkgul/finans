@@ -16,14 +16,14 @@
                                 Profil Ayarlarınız
                             </div><!-- /.card-header -->
                             <div class="card-body">
-                                <form class="form-horizontal">
-
+                                <form action="{{route('profil.store')}}" enctype="multipart/form-data" method="post">
+                                    @csrf
 
 
                                     <div class="form-group row">
                                         <label for="inputName" class="col-sm-2 col-form-label">Fotoğraf</label>
                                         <div class="col-sm-10">
-                                            <input type="file" class="form-control"   name="name" value="{{\Auth::user()->name}}">
+                                            <input type="file" class="form-control" name="photo" >
                                         </div>
                                     </div>
 
@@ -41,23 +41,16 @@
                                     </div>
 
                                     <div class="form-group row">
-                                        <label for="inputSkills" class="col-sm-2 col-form-label">Skills</label>
+                                        <label for="inputSkills" class="col-sm-2 col-form-label">Şifre</label>
                                         <div class="col-sm-10">
-                                            <input type="text" class="form-control" id="inputSkills" placeholder="Skills">
+                                            <input type="password" class="form-control" name="password" autocomplete="off">
                                         </div>
                                     </div>
+
+
                                     <div class="form-group row">
                                         <div class="offset-sm-2 col-sm-10">
-                                            <div class="checkbox">
-                                                <label>
-                                                    <input type="checkbox"> I agree to the <a href="#">terms and conditions</a>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <div class="offset-sm-2 col-sm-10">
-                                            <button type="submit" class="btn btn-danger">Submit</button>
+                                            <button type="submit" class="btn btn-danger">Güncelle</button>
                                         </div>
                                     </div>
                                 </form>

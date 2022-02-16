@@ -9,8 +9,20 @@
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+            <a data-toggle="dropdown" href="#" class="nav-link"> <i class="fa fa-plus"></i> Yeni Bir... </a>
+            <div class="dropdown-menu  dropdown-menu-md  dropdown-menu-right">
+                <a class="dropdown-item " href="{{route('fatura.create',['type'=>FATURA_GELIR])}}" > <i class="fa fa-file-invoice"></i>  Gelir Faturası   </a>
+                <a class="dropdown-item" href="{{route('fatura.create',['type'=>FATURA_GIDER])}}" > <i class="fa fa-file-invoice-dollar"></i>  Gider Faturası   </a>
+                <a class="dropdown-item" href="{{route('islem.create',['type'=>ISLEM_ODEME])}}" > <i class="fas fa-paypal"></i> Ödeme Yap  </a>
+                <a class="dropdown-item" href="{{route('islem.create',['type'=>ISLEM_TAHSILAT])}}" > <i class="fas fa-cc-paypal"></i>  Tahsilat Al   </a>
 
+            </div>
+        </li>
 
+    </ul>
+
+    <ul class="navbar-nav  ">
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
             <a class="nav-link" data-toggle="dropdown" href="#">
@@ -19,7 +31,6 @@
             </a>
             <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <span class="dropdown-item dropdown-header">15 Bildirimler</span>
-
 
                 @if(count(\App\Models\Reminder::faturaHatirlatici())!=0)
                     @foreach(\App\Models\Reminder::faturaHatirlatici() as $k=>$v)
@@ -34,18 +45,13 @@
 
             </div>
         </li>
-
-        <li class="nav-item dropdown">
-
-            <a class="nav-link" data-toggle="dropdown" href="#"> {{\Auth::user()->name}} </a>
-
-            <div class="dropdown-menu  dropdown-menu-right">
-                <a class="nav-link"   href="{{route('profil.index')}}"> Profil </a>
-                <a class="nav-link"   href="{{route('logout')}}"> Çıkış </a>
-            </div>
-
+    </ul>
+    <ul class="navbar-nav">
+        <li class="nav-item ">
+            <a href="{{route('logout')}}" class="nav-link"> <i class="fa fa-sign-out-alt"></i> Çıkış </a>
         </li>
 
     </ul>
+
 </nav>
 <!-- /.navbar -->

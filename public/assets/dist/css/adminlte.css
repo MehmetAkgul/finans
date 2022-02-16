@@ -15193,6 +15193,12 @@ body.text-sm .control-sidebar {
   padding: 0;
 }
 
+.dropdown-menu-md {
+  max-width: 200px;
+  min-width: 180px;
+  padding: 0;
+}
+
 .dropdown-menu-lg .dropdown-divider {
   margin: 0;
 }

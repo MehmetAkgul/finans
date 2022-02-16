@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('profil')->name('profil.')->group(function () {
         Route::get('/index', [ProfilController::class, 'index'])->name('index');
+        Route::post('/store', [ProfilController::class, 'store'])->name('store');
     });
 
     Route::prefix('musteriler')->name('musteriler.')->group(function () {
