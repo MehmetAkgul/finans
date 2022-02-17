@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Admin\MusteriController;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,6 +23,17 @@ class Musteriler extends Model
         }
 
 
+    }
+
+    public static function getPhoto($id)
+    {
+        $data = Musteriler::where('id', $id)->first();
+
+        if ($data->photo != "") {
+            return $data->photo;
+        } else {
+            return "/assets/dist/img/default-150x150.png";
+        }
     }
 
 }

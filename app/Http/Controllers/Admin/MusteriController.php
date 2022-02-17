@@ -198,7 +198,7 @@ class MusteriController extends Controller
 
     public function extre($id)
     {
-
+        return view('admin.musteriler.extre', );
     }
 
 }
