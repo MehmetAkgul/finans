@@ -9,6 +9,7 @@ class Reminder extends Model
 {
     public static function faturaHatirlatici()
     {
+        $returnArray = [];
         if (Fatura::count() != 0) {
             $list = Fatura::all();
             foreach ($list as $k => $v) {
@@ -27,7 +28,7 @@ class Reminder extends Model
                     $returnArray[$k]['name'] = $v['faturaNo'] . " - " . $type;
                     $returnArray[$k]['musteri'] = Musteriler::getPublicName($v['musteriId']);
                     $returnArray[$k]['fiyat'] = Fatura::getTotal($v['id']);
-                    $returnArray[$k]['url'] =$uri;
+                    $returnArray[$k]['url'] = $uri;
                 }
             }
         }

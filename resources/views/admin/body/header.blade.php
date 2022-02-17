@@ -46,12 +46,25 @@
             </div>
         </li>
     </ul>
-    <ul class="navbar-nav">
-        <li class="nav-item ">
-            <a href="{{route('logout')}}" class="nav-link"> <i class="fa fa-sign-out-alt"></i> Çıkış </a>
+
+    <ul class="navbar-nav ">
+        <li class="nav-item dropdown">
+
+
+                    <a data-toggle="dropdown" href="#" class="nav-link">
+                        {{\Auth::user()->name}}
+                        <img src="{{asset(\App\Models\User::getPhoto())}}" class="img-circle  " style="width: 35px;">
+                    </a>
+
+            <div class="dropdown-menu  dropdown-menu-md  dropdown-menu-right">
+                <a class="dropdown-item " href="{{route('profil.index')}}" > Profilim </a>
+                <a class="dropdown-item" href="{{route('logout')}}" > <i class="fa fa-sign-out-alt"></i> Çıkış </a>
+
+            </div>
         </li>
 
     </ul>
+
 
 </nav>
 <!-- /.navbar -->

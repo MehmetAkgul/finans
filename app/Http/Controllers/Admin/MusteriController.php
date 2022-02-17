@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helper\FileUpload;
 use App\Http\Controllers\Controller;
 use App\Models\Musteriler;
+use App\Models\Rapor;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -80,7 +81,7 @@ class MusteriController extends Controller
         $c = Musteriler::where('id', $id)->count();
         if ($c != 0) {
             $data = Musteriler::where('id', $id)->first();
-            return  view('admin.musteriler.edit', compact('data'));
+            return view('admin.musteriler.edit', compact('data'));
         } else {
             return redirect('/');
         }
@@ -171,13 +172,33 @@ class MusteriController extends Controller
                     return "Kurumsal";
                 }
             })
+            ->addColumn('bakiye', function ($table) {
+                $bakiye = Rapor::getMusteriBakiye($table->id);
+                if ($bakiye < 0) {
+                    return '<span style="color:red"> ' . $bakiye . '</span>';
+                } elseif ($bakiye > 0) {
+                    return '<span style="color:green"> +' . $bakiye . '</span>';
+                }else
+                {
+                    return $bakiye;
+                }
+
+            })
             ->addColumn('publicName', function ($table) {
                 return Musteriler::getPublicName($table->id);
             })
-            ->rawColumns(['edit', 'delete'])
+            ->addColumn('extre', function ($table) {
+                return '<a href="' . route('musteriler.extre', ['id' => $table->id]) . '">Extre</a>';
+            })
+            ->rawColumns(['extre','bakiye','edit', 'delete'])
             ->make(true);
         return $data;
     }
 
+
+    public function extre($id)
+    {
+
+    }
 
 }

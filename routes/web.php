@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/update/{id}', [MusteriController::class, 'update'])->name('update');
         Route::get('/delete/{id}', [MusteriController::class, 'delete'])->name('delete');
         Route::post('/data', [MusteriController::class, 'data'])->name('data');
+        Route::get('/extre/{id}', [MusteriController::class, 'extre'])->name('extre');
     });
 
     Route::prefix('kalem')->name('kalem.')->group(function () {
