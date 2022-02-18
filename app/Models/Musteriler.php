@@ -21,8 +21,6 @@ class Musteriler extends Model
         } else {
             return $data[0]['firmaAdi'];
         }
-
-
     }
 
     public static function getPhoto($id)
@@ -35,5 +33,6 @@ class Musteriler extends Model
             return "/assets/dist/img/default-150x150.png";
         }
     }
+
 
 }

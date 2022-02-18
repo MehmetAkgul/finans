@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helper\FileUpload;
 use App\Http\Controllers\Controller;
+use App\Models\FaturaIslem;
+use App\Models\Islem;
+use App\Models\Logger;
 use App\Models\Musteriler;
 use App\Models\Rapor;
 use Illuminate\Contracts\Foundation\Application;
@@ -12,6 +15,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -51,9 +55,11 @@ class MusteriController extends Controller
 
         $create = Musteriler::create($all);
         if ($create) {
-            $notification = array('staus', 'Müsteri Eklendi');
+            Logger::Insert($all['ad'] . " " . $all['soyad'] . " Müşterisi Kayıt Edildi", "Müşteri");
+
+            $notification = array('status', 'Müsteri Eklendi');
         } else {
-            $notification = array('staus', 'Bir hata oluştu');
+            $notification = array('status', 'Bir hata oluştu');
         }
 
         return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
@@ -105,9 +111,11 @@ class MusteriController extends Controller
 
             $update = Musteriler::where('id', $id)->update($all);
             if ($update) {
-                $notification = array('staus', 'Müsteri Düzenlendi');
+                Logger::Insert($data->ad . " " . $data->soyad . " isimli Müşteri Düzenlendi", "Müşteri");
+
+                $notification = array('status', 'Müsteri Düzenlendi');
             } else {
-                $notification = array('staus', 'Bir hata oluştu');
+                $notification = array('status', 'Bir hata oluştu');
             }
 
             return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
@@ -135,9 +143,10 @@ class MusteriController extends Controller
 
             $delete = Musteriler::where('id', $id)->delete();
             if ($delete) {
-                $notification = array('staus', 'Müsteri Düzenlendi');
+                Logger::Insert($data->ad . " " . $data->soyad . " Müşteri Silindi", "Müşteri");
+                $notification = array('status', 'Müsteri Düzenlendi');
             } else {
-                $notification = array('staus', 'Bir hata oluştu');
+                $notification = array('status', 'Bir hata oluştu');
             }
 
             return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
@@ -178,8 +187,7 @@ class MusteriController extends Controller
                     return '<span style="color:red"> ' . $bakiye . '</span>';
                 } elseif ($bakiye > 0) {
                     return '<span style="color:green"> +' . $bakiye . '</span>';
-                }else
-                {
+                } else {
                     return $bakiye;
                 }
 
@@ -190,7 +198,7 @@ class MusteriController extends Controller
             ->addColumn('extre', function ($table) {
                 return '<a href="' . route('musteriler.extre', ['id' => $table->id]) . '">Extre</a>';
             })
-            ->rawColumns(['extre','bakiye','edit', 'delete'])
+            ->rawColumns(['extre', 'bakiye', 'edit', 'delete'])
             ->make(true);
         return $data;
     }
@@ -198,7 +206,31 @@ class MusteriController extends Controller
 
     public function extre($id)
     {
-        return view('admin.musteriler.extre', );
+        $c = Musteriler::where('id', $id)->count();
+        if ($c != 0) {
+            $data = Musteriler::where('id', $id)->first();
+
+            $faturaTablo = FaturaIslem::leftJoin('faturas', 'fatura_islems.faturaId', '=', 'faturas.id')
+                ->where('faturas.musteriId', $id)
+                ->groupBy('faturas.id')
+                ->orderBy('faturas.faturaTarihi', 'desc')
+                ->select(['faturas.id as id', 'faturas.faturaTipi as type', DB::raw('"fatura" as uType'), DB::raw('SUM(genel_toplam_tutar) as fiyat'), 'faturas.faturaTarihi as tarih']);
+
+            $islemTablo = Islem::where('musteriId', $id)
+                ->orderBy('tarih', 'desc')
+                ->select(['id', 'type', DB::raw('"islem" as uType'), 'fiyat', 'tarih']);
+
+            $viewTablo = $faturaTablo->union($islemTablo)
+                ->orderBy('tarih', 'desc')
+                ->get();
+
+            //   dd($viewTablo);
+
+            return view('admin.musteriler.extre', compact('data', 'viewTablo'));
+        } else {
+            return redirect('/');
+        }
+
     }
 
 }

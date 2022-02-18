@@ -1,5 +1,6 @@
 @extends('admin.body.master')
 @section('page-level-css')
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.css">
 
 @endsection()
 
@@ -105,15 +106,12 @@
 
                             </div><!-- /.card-header -->
                             <div class="card-body">
-                                <table class="table table-bordered" id="example1">
+                                <table class="table table-bordered" id="example">
                                     <thead>
                                     <tr>
-                                        <th>Fatura No</th>
-                                        <th>Müşteri</th>
-                                        <th>İşlem Tipi</th>
-                                        <th>Fiyat</th>
-                                        <th>Düzenle</th>
-                                        <th>Sil</th>
+                                        <th>İşlem</th>
+                                        <th>Açıklama</th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -135,7 +133,55 @@
     </div>
 @endsection()
 @section('page-level-script')
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.js"></script>
+    <script>
+        $(document).ready(function () {
 
+            let table = $('#example').DataTable({
+                lengthMenu: [[25, 100, -1], [25, 100, "All"]],
+                /*
+                dom: 'Blfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'pdf', 'print'
+                ],
+                */
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    type: 'POST',
+                    url: '{{route('admin.data')}}',
+
+                },
+                columns: [
+                    {data: 'islem', name: 'islem'},
+                    {data: 'text', name: 'text'},
+
+                ]
+            });
+            jQuery.fn.DataTable.ext.type.search.string = function (data) {
+                var testd = !data ?
+                    '' :
+                    typeof data === 'string' ?
+                        data
+                            .replace(/i/g, 'İ')
+                            .replace(/ı/g, 'I') :
+                        data;
+                return testd;
+            };
+            $('#example_filter input').keyup(function () {
+                table
+                    .search(
+                        jQuery.fn.DataTable.ext.type.search.string(this.value)
+                    )
+                    .draw();
+            });
+
+
+        });
+    </script>
+    <script>
+
+    </script>
 
 
 @endsection()

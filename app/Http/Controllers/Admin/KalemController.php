@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
- use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use App\Models\Kalem;
+use App\Models\Logger;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
- use Yajra\DataTables\Facades\DataTables;
+use Yajra\DataTables\Facades\DataTables;
 
 class KalemController extends Controller
 {
@@ -47,9 +48,10 @@ class KalemController extends Controller
 
         $create = Kalem::create($all);
         if ($create) {
-            $notification = array('staus', 'Gelir $ Gider Kalemi Eklendi');
+            Logger::Insert($all['ad'] . " Kalemi Eklendi", "Kalem");
+            $notification = array('status', 'Gelir $ Gider Kalemi Eklendi');
         } else {
-            $notification = array('staus', 'Bir hata oluştu');
+            $notification = array('status', 'Bir hata oluştu');
         }
 
         return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
@@ -77,7 +79,8 @@ class KalemController extends Controller
         $c = Kalem::where('id', $id)->count();
         if ($c != 0) {
             $data = Kalem::where('id', $id)->first();
-            return  view('admin.kalem.edit', compact('data'));
+
+            return view('admin.kalem.edit', compact('data'));
         } else {
             return redirect('/');
         }
@@ -99,9 +102,10 @@ class KalemController extends Controller
 
             $update = Kalem::where('id', $id)->update($all);
             if ($update) {
-                $notification = array('staus', 'Gelir $ Gider Kalemi Düzenlendi');
+                Logger::Insert($all['ad'] . " Kalemi Düzenlendi", "Kalem");
+                $notification = array('status', 'Gelir $ Gider Kalemi Düzenlendi');
             } else {
-                $notification = array('staus', 'Bir hata oluştu');
+                $notification = array('status', 'Bir hata oluştu');
             }
 
             return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
@@ -124,11 +128,13 @@ class KalemController extends Controller
 
         if ($c != 0) {
 
+            $data = Kalem::where('id', $id)->first();
             $delete = Kalem::where('id', $id)->delete();
             if ($delete) {
-                $notification = array('staus', 'Gelir $ Gider Kalemi Düzenlendi');
+                Logger::Insert($data->ad . " Kalemi Silindi", "Kalem");
+                $notification = array('status', 'Gelir $ Gider Kalemi Düzenlendi');
             } else {
-                $notification = array('staus', 'Bir hata oluştu');
+                $notification = array('status', 'Bir hata oluştu');
             }
 
             return redirect()->back()->with($notification)->header('Content-Type', 'text/html');

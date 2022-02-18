@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Banka;
 use App\Models\Fatura;
 use App\Models\Islem;
+use App\Models\Logger;
 use App\Models\Musteriler;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -56,12 +57,19 @@ class IslemController extends Controller
 
 
         $all = $request->except('_token');
-    //    dd($all);
+        $type = $request->route('type');
+        //    dd($all);
         $create = Islem::create($all);
         if ($create) {
-            $notification = array('staus', 'Fatura Eklendi');
+            if ($type == ISLEM_ODEME) {
+                Logger::Insert("Yeni Ödeme Yapıldı", "İşlem");
+            } else {
+                Logger::Insert("Yeni Tahsilat Yapıldı", "İşlem");
+            }
+
+            $notification = array('status', 'Fatura Eklendi');
         } else {
-            $notification = array('staus', 'Bir hata oluştu');
+            $notification = array('status', 'Bir hata oluştu');
         }
 
         return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
@@ -94,6 +102,7 @@ class IslemController extends Controller
             $musteriler = Musteriler::all();
             $banka = Banka::all();
             if ($data->islemTipi == 0) {
+
                 return view('admin.islem.odeme.edit', compact('data', 'musteriler', 'banka'));
             } else {
                 return view('admin.islem.tahsilat.edit', compact('data', 'musteriler', 'banka'));
@@ -120,12 +129,17 @@ class IslemController extends Controller
 
             $all = $request->except('_token');
 
+            $data = Islem::where('id', $id)->first();
             $update = Islem::where('id', $id)->update($all);
-
             if ($update) {
-                $notification = array('staus', 'İslem Düzenlendi');
+                if ($data->type == ISLEM_ODEME) {
+                    Logger::Insert(" Ödeme işlemi Düzenlendi", "İşlem");
+                } else {
+                    Logger::Insert(" Tahsilat işlemi Düzenlendi", "İşlem");
+                }
+                $notification = array('status', 'İslem Düzenlendi');
             } else {
-                $notification = array('staus', 'Bir hata oluştu');
+                $notification = array('status', 'Bir hata oluştu');
             }
 
             return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
@@ -150,10 +164,16 @@ class IslemController extends Controller
         if ($c != 0) {
 
             $delete = Islem::where('id', $id)->delete();
+            $data = Islem::where('id', $id)->first();
             if ($delete) {
-                $notification = array('staus', 'Gelir $ Gider Faturai Düzenlendi');
+                if ($data->type == ISLEM_ODEME) {
+                    Logger::Insert(" Ödeme işlemi Sislindi", "İşlem");
+                } else {
+                    Logger::Insert(" Tahsilat işlemi Sislindi", "İşlem");
+                }
+                $notification = array('status', 'Gelir $ Gider Faturai Düzenlendi');
             } else {
-                $notification = array('staus', 'Bir hata oluştu');
+                $notification = array('status', 'Bir hata oluştu');
             }
 
             return redirect()->back()->with($notification)->header('Content-Type', 'text/html');

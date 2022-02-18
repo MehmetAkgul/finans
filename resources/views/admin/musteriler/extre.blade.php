@@ -7,58 +7,89 @@
 
     <div class="content-wrapper">
         <!-- Main content -->
-        <section class="content pt-2">
+        <section class="content mt-2">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header ">
-                                <h4>Markalar</h4>
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body ">
-                                <div class="float-left">
-                                    <div class="input-group input-group-sm" style="width: 150px;">
-                                        <input type="text" name="table_search" class="form-control float-right"
-                                               placeholder="Ara">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-default">
-                                                <i class="fas fa-search"></i>
-                                            </button>
-                                        </div>
-                                    </div>
+                    <div class="col-md-3">
+
+                        <!-- Profile Image -->
+                        <div class="card card-primary card-outline">
+                            <div class="card-body box-profile">
+                                <div class="text-center">
+                                    <img class="profile-user-img img-fluid img-circle"
+                                         src="{{asset(\App\Models\Musteriler::getPhoto($data->id))}}"
+                                         alt="User profile picture">
                                 </div>
 
-                                <div class="float-right mb-1">
-                                    <a href="" class="btn btn-success btn-sm" type="button" data-toggle="modal" data-target="#newAddModal"> <i
-                                                class="fa fa-plus"></i> Ekle</a>
-                                    <a href="" class="btn btn-info btn-sm" type="button"> <i class="fa fa-file-excel"></i> Excel</a>
-                                    <a href="" class="btn btn-default  btn-sm" type="button"> <i class="fa fa-file-pdf"></i> Pdf</a>
-                                </div>
+                                <h3 class="profile-username text-center">{{\App\Models\Musteriler::getPublicName($data->id)}}</h3>
+
+                                <p class="text-muted text-center">{{$data->musteriTipi==0?"Bireysel":"Kurumsal"}}</p>
+                                <p class="text-muted text-center">{{$data->telefon}}</p>
+
+
+                                <a href="{{route('musteriler.edit',$data->id)}}" class="btn btn-primary btn-block"><b>Düzenle</b></a>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+
+                        <!-- About Me Box -->
+
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-9">
+                        <div class="card">
+                            <div class="card-header p-2">
+                                Extre Listesi
+                            </div><!-- /.card-header -->
+                            <div class="card-body">
+
                                 <table class="table table-bordered" id="example">
                                     <thead>
                                     <tr>
-                                        <th>Ad</th>
-                                        <th>Müşteri Tipi</th>
-                                        <th>Bakiye</th>
-                                        <th>Extre</th>
-                                        <th>Düzenle</th>
-                                        <th>Sil</th>
+                                        <th>İşlem</th>
+                                        <th>Fiyat</th>
+                                        <th>Tarih</th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
-
+                                    @foreach($viewTablo as $k=>$v)
+                                        <tr>
+                                            <td>
+                                                @if($v['uType']=="fatura")
+                                                    @if($v['type']==FATURA_GELIR)
+                                                        Gelir Faturası
+                                                    @else
+                                                        Gider Faturası
+                                                    @endif
+                                                @else
+                                                    @if($v['type']==ISLEM_ODEME)
+                                                        Ödeme
+                                                    @else
+                                                        Tahsilat
+                                                    @endif
+                                                @endif
+                                            </td>
+                                            <td> {{$v['fiyat']}}</td>
+                                            <td> {{$v['tarih']}}</td>
+                                        </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>
-                            <!-- /.card-body -->
-
-                        </div>
+                            <!-- /.tab-content -->
+                        </div><!-- /.card-body -->
                     </div>
-                </div><!-- /.container-fluid -->
-            </div><!-- /.container-fluid -->
-        </section>
-        <!-- /.content -->
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+    </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
     </div>
     <!-- Button trigger modal -->
 
@@ -71,7 +102,7 @@
     <script>
         $(document).ready(function () {
 
-            let table = $('#example').DataTable({
+            let table = $('#example1').DataTable({
                 lengthMenu: [[25, 100, -1], [25, 100, "All"]],
                 /*
                 dom: 'Blfrtip',

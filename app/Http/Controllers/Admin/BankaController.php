@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banka;
+use App\Models\Logger;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
@@ -47,9 +48,10 @@ class BankaController extends Controller
 
         $create = Banka::create($all);
         if ($create) {
-            $notification = array('staus', 'Gelir $ Gider Bankai Eklendi');
+            Logger::Insert("Yeni Banka Bilgisi Eklendi", "Banka");
+            $notification = array('status', 'Gelir $ Gider Bankai Eklendi');
         } else {
-            $notification = array('staus', 'Bir hata oluştu');
+            $notification = array('status', 'Bir hata oluştu');
         }
 
         return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
@@ -99,9 +101,10 @@ class BankaController extends Controller
 
             $update = Banka::where('id', $id)->update($all);
             if ($update) {
-                $notification = array('staus', 'Gelir $ Gider Bankai Düzenlendi');
+                Logger::Insert($all["name"]." Düzenlendi", "Banka");
+                $notification = array('status', 'Gelir $ Gider Bankai Düzenlendi');
             } else {
-                $notification = array('staus', 'Bir hata oluştu');
+                $notification = array('status', 'Bir hata oluştu');
             }
 
             return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
@@ -124,11 +127,13 @@ class BankaController extends Controller
 
         if ($c != 0) {
 
+            $banka = Banka::where('id', $id)->first();
             $delete = Banka::where('id', $id)->delete();
             if ($delete) {
-                $notification = array('staus', 'Gelir $ Gider Bankai Düzenlendi');
+                Logger::Insert($banka->name." Silindi", "Banka");
+                $notification = array('status', 'Gelir $ Gider Bankai Düzenlendi');
             } else {
-                $notification = array('staus', 'Bir hata oluştu');
+                $notification = array('status', 'Bir hata oluştu');
             }
 
             return redirect()->back()->with($notification)->header('Content-Type', 'text/html');

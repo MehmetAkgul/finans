@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Fatura;
 use App\Models\FaturaIslem;
 use App\Models\Kalem;
+use App\Models\Logger;
 use App\Models\Musteriler;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -38,6 +39,7 @@ class FaturaController extends Controller
         $musteriler = Musteriler::all();
         $kalem = Kalem::where('kalemTipi', $type)->get();
         if ($type == 0) {
+
             return view('admin.fatura.gelir.create', compact('musteriler', 'kalem'));
         } else {
             return view('admin.fatura.gider.create', compact('musteriler', 'kalem'));
@@ -83,14 +85,15 @@ class FaturaController extends Controller
                 }
             }
         } else {
-            $notification = array('staus', 'Bu Fatura Mevcut');
+            $notification = array('status', 'Bu Fatura Mevcut');
             return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
         }
 
         if ($create) {
-            $notification = array('staus', 'Fatura Eklendi');
+            Logger::Insert("Yeni Fatura Bilgisi Eklendi", "Fatura");
+            $notification = array('status', 'Fatura Eklendi');
         } else {
-            $notification = array('staus', 'Bir hata oluştu');
+            $notification = array('status', 'Bir hata oluştu');
         }
 
         return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
@@ -183,9 +186,10 @@ class FaturaController extends Controller
             $update = Fatura::where('id', $id)->update($all);
 
             if ($update) {
-                $notification = array('staus', 'Gelir $ Gider Faturai Düzenlendi');
+                Logger::Insert("Gelir $ Gider Faturası Düzenlendi", "Fatura");
+                $notification = array('status', 'Gelir $ Gider Faturası Düzenlendi');
             } else {
-                $notification = array('staus', 'Bir hata oluştu');
+                $notification = array('status', 'Bir hata oluştu');
             }
 
             return redirect()->back()->with($notification)->header('Content-Type', 'text/html');
@@ -211,9 +215,10 @@ class FaturaController extends Controller
 
             $delete = Fatura::where('id', $id)->delete();
             if ($delete) {
-                $notification = array('staus', 'Gelir $ Gider Faturai Düzenlendi');
+                Logger::Insert("Gelir $ Gider Faturası Silindi", "Fatura");
+                $notification = array('status', 'Gelir $ Gider Faturai Düzenlendi');
             } else {
-                $notification = array('staus', 'Bir hata oluştu');
+                $notification = array('status', 'Bir hata oluştu');
             }
 
             return redirect()->back()->with($notification)->header('Content-Type', 'text/html');

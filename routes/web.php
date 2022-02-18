@@ -15,6 +15,7 @@ require __DIR__ . '/auth.php';
 Route::middleware('auth')->group(function () {
 
     Route::get('/', [HomeController::class, 'index'])->name('admin.dashboard');
+    Route::post('/data', [HomeController::class, 'data'])->name('admin.data');
 
 
     Route::prefix('profil')->name('profil.')->group(function () {
